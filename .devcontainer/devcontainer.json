@@ -1,0 +1,11 @@
+{
+	"name": "python3.7",
+
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context"   : "..",
+	},
+
+	"postCreateCommand": "python fetch_pretrained_models.py",
+
+}
