@@ -67,10 +67,12 @@ python main.py train INBD \
 
 ## Dataset
 
-Our dataset and annotations can be downloaded via `python fetch_dataset.py` or via the following links:
-- [DO](https://github.com/alexander-g/INBD/releases/download/dataset_v1/DO_v1.zip)
-- [EH](https://github.com/alexander-g/INBD/releases/download/dataset_v1/EH_v1.zip)
-- [VM](https://github.com/alexander-g/INBD/releases/download/dataset_v1/VM_v1.zip)
+We introduce a new publicly available dataset: MiSCS (Microscopic Shrub Cross Sections)
+
+The dataset and annotations can be downloaded via `python fetch_dataset.py` or via the following links:
+- [DO (Dryas octopetala)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/DO_v1.zip)
+- [EH (Empetrum hermaphroditum)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/EH_v1.zip)
+- [VM (Vaccinium myrtillus)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/VM_v1.zip)
 
 All images were acquired by Alba Anadon-Rosell.
 If you have ecology-related questions, please contact `a.anadon at creaf.uab.cat`
@@ -82,7 +84,7 @@ If you want to use this dataset for computer vision research, please cite the pu
 
 ```bibtex
 @inproceedings{INBD,
-  title     = {Iterative Next Boundary Detection for Instance Segmentation of Tree Rings in Microscopy Images of Shrub Cross Sections},
+  title     = "{Iterative Next Boundary Detection for Instance Segmentation of Tree Rings in Microscopy Images of Shrub Cross Sections}",
   author    = {Alexander Gillert and Giulia Resente and Alba Anadon‐Rosell and Martin Wilmking and Uwe von Lukas},
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   month     = {June},
@@ -90,5 +92,14 @@ If you want to use this dataset for computer vision research, please cite the pu
   note      = {Preprint: \url{https://arxiv.org/pdf/2212.03022.pdf}}
 }
 ```
+
+***
+
+## License
+
+License for the source code: [MPL-2.0](https://github.com/alexander-g/INBD/blob/master/LICENSE)
+
+License for the dataset: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 
