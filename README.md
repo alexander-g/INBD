@@ -26,7 +26,7 @@ python fetch_dataset.py
 python fetch_pretrained_models.py
 ```
 
-Or use GitHub Codespaces: [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=574937325&machine=basicLinux32gb&location=WestEurope)
+Or use GitHub Codespaces: [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=574937325&machine=standardLinux32gb&location=WestEurope)
 
 ***
 
@@ -36,10 +36,10 @@ Or use GitHub Codespaces: [![Open in GitHub Codespaces](https://github.com/codes
 
 ```bash
 #single imagefile
-python main.py inference checkpoints/INBD_empetrum/model.pt.zip imagefile.JPG
+python main.py inference checkpoints/INBD_EH/model.pt.zip dataset/EH/inputimages/EH_0033.jpg
 
 #list of imagefiles
-python main.py inference checkpoints/INBD_empetrum/model.pt.zip dataset/EH/test_inputimages.txt
+python main.py inference checkpoints/INBD_EH/model.pt.zip dataset/EH/test_inputimages.txt
 ```
 
 ***
