@@ -1,7 +1,7 @@
 # INBD
 Iterative Next Boundary Detection for  Instance Segmentation of Tree Rings in Microscopy Images of Shrub Cross Sections
 
-Accepted to CVPR 2023. Preprint: [https://arxiv.org/pdf/2212.03022.pdf](https://arxiv.org/pdf/2212.03022.pdf)
+CVPR 2023. [Paper link](https://openaccess.thecvf.com/content/CVPR2023/html/Gillert_Iterative_Next_Boundary_Detection_for_Instance_Segmentation_of_Tree_Rings_CVPR_2023_paper.html)
 
 ***
 
@@ -89,7 +89,7 @@ If you want to use this dataset for computer vision research, please cite the pu
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   month     = {June},
   year      = {2023},
-  note      = {Preprint: \url{https://arxiv.org/pdf/2212.03022.pdf}}
+  pages     = {14540-14548}
 }
 ```
 
