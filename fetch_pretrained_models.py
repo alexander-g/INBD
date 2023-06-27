@@ -1,9 +1,9 @@
 import urllib.request, os
 
 URLS = {
-    'https://github.com/alexander-g/INBD/releases/download/pretrained_v1/DO_v1.zip' : 'checkpoints/INBD_DO/model.pt.zip',
-    'https://github.com/alexander-g/INBD/releases/download/pretrained_v1/EH_v1.zip' : 'checkpoints/INBD_EH/model.pt.zip',
-    'https://github.com/alexander-g/INBD/releases/download/pretrained_v1/VM_v1.zip' : 'checkpoints/INBD_VM/model.pt.zip',
+    'https://github.com/alexander-g/INBD/releases/download/pretrained_v2/DO_v2.zip' : 'checkpoints/INBD_DO/model.pt.zip',
+    'https://github.com/alexander-g/INBD/releases/download/pretrained_v2/EH_v2.zip' : 'checkpoints/INBD_EH/model.pt.zip',
+    'https://github.com/alexander-g/INBD/releases/download/pretrained_v2/VM_v2.zip' : 'checkpoints/INBD_VM/model.pt.zip',
 }
 
 for url, destination in URLS.items():
