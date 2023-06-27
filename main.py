@@ -121,7 +121,6 @@ def inference(args):
     for i,f in enumerate(imagefiles):
         print(f'[{i:4d}/{len(imagefiles)}] {os.path.basename(f)}', end='\r')
         upscale = (not args.seg)
-        output  = model.process_image(f, upscale_result=upscale)
         try:
             output  = model.process_image(f, upscale_result=upscale)
         except Exception as e:

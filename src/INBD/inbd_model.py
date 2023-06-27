@@ -133,7 +133,8 @@ class INBD_Model(UNet):
                 all_pgrids.append(pgrid)
         #TODO: scale boundaries
         labelmap = boundaries_to_labelmap(all_boundaries, centermask.shape, filter_threshold=0, scale=1 if not upscale_result else self.scale)
-        labelmap = apply_background(labelmap, (output.background > 0))
+        #NOTE: currently not applying background due to issues in downstream tasks
+        #labelmap = apply_background(labelmap, (output.background > 0))
         labelmap = util.filter_labelmap(labelmap, threshold=0.001)
         #after filtering remove corresponding boundaries
         all_boundaries = [all_boundaries[i-1] for i in np.unique(labelmap) if i!=0]
