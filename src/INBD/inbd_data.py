@@ -90,7 +90,7 @@ def load_annotation_for_inbd_tiff(annotationfile:str, *a, **kw) -> np.ndarray:
 
 def load_annotation_for_inbd_png(annotationfile:str, *a, **kw) -> np.ndarray:
     L      = datasets.load_instanced_annotation(annotationfile, *a,  white_label=0, black_label=-1, red_label=1, **kw)
-    annotation_sanity_check(L, annotationfile)
+    datasets.annotation_sanity_check(L, annotationfile)
     L      = remove_boundary_class(L)
     chain  = labelmap_to_chain(L, start_class=1, bg_class=-1)
     L      = relabel(L, chain)

@@ -70,9 +70,9 @@ python main.py train INBD \
 We introduce a new publicly available dataset: MiSCS (Microscopic Shrub Cross Sections)
 
 The dataset and annotations can be downloaded via `python fetch_dataset.py` or via the following links:
-- [DO (Dryas octopetala)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/DO_v1.zip)
-- [EH (Empetrum hermaphroditum)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/EH_v1.zip)
-- [VM (Vaccinium myrtillus)](https://github.com/alexander-g/INBD/releases/download/dataset_v1/VM_v1.zip)
+- [DO (Dryas octopetala)](https://github.com/alexander-g/INBD/releases/download/dataset_v2/DO_v2.zip)
+- [EH (Empetrum hermaphroditum)](https://github.com/alexander-g/INBD/releases/download/dataset_v2/EH_v2.zip)
+- [VM (Vaccinium myrtillus)](https://github.com/alexander-g/INBD/releases/download/dataset_v2/VM_v2.zip)
 
 All images were acquired by Alba Anadon-Rosell.
 If you have ecology-related questions, please contact `a.anadon at creaf.uab.cat`
