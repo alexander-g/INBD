@@ -190,6 +190,12 @@ class CircularConv(torch.nn.Conv2d):
         p     = p0
         x = torch.cat([x[..., -p:],                   x, x[..., :p]],                    dim=3)
         x = torch.cat([torch.zeros_like(x[...,:p,:]), x, torch.zeros_like(x[...,:p,:])], dim=2)
+        # padding to at least the size of the kernel
+        # otherwise might throw an exception in rare cases
+        x = torch.nn.functional.pad(
+            x, 
+            (0, max(0, self.kernel_size[-2] - x.shape[2]), 0, max(0,self.kernel_size[-1] - x.shape[3]))
+        )
         return super().forward(x, *a, **kw)
 
 def replace_modules(module:torch.nn.Module, module_factory:tp.Callable, replace_what:type) -> torch.nn.Module:
