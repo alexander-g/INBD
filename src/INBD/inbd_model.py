@@ -194,7 +194,7 @@ class CircularConv(torch.nn.Conv2d):
         # otherwise might throw an exception in rare cases
         x = torch.nn.functional.pad(
             x, 
-            (0, max(0, self.kernel_size[-2] - x.shape[2]), 0, max(0,self.kernel_size[-1] - x.shape[3]))
+            (0, max(0,self.kernel_size[-1] - x.shape[3]), 0, max(0, self.kernel_size[-2] - x.shape[2]))
         )
         return super().forward(x, *a, **kw)
 
