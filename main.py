@@ -28,7 +28,10 @@ def train(args):
             backbone           = args.backbone,
             downsample_factor  = args.downsample,
         )
-        kw     = {'scales':[args.downsample*0.8, args.downsample*1.5]}
+        kw = {
+            'scales':[args.downsample*0.8, args.downsample*1.5],
+            'dice_on_center': args.dice_on_center,
+        }
     elif args.modeltype == 'INBD':
         assert os.path.exists(args.segmentationmodel)
         segmentationmodel = util.load_segmentationmodel(args.segmentationmodel)
@@ -216,6 +219,7 @@ if __name__ == '__main__':
     parser_train.add_argument('--segmentationmodel',      type=str, help='Path to pretrained segmentation model (INBD only)')
     parser_train.add_argument('--epochs',          type=int,   default=100, help='Number of training epochs')
     parser_train.add_argument('--downsample',      type=float, default=4,   help='Resolution downsampling factor')
+    parser_train.add_argument('--dice-on-center',  action='store_true', help='Dice loss on pith/center')
     parser_train.add_argument('--size',            type=int,   default=512, help='Resolution for the cartesian model')
     parser_train.add_argument('--backbone',        type=str,   default='mobilenet3l',  help='UNet backbone')
     

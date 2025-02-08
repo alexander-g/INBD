@@ -40,6 +40,10 @@ class SegmentationModel(models.UNet):
 
 
 class SegmentationTask(training.TrainingTask):
+    def __init__(self, *a, dice_on_center:bool = False, **kw):
+        super().__init__(*a, **kw)
+        self.dice_on_center = dice_on_center
+
     def training_step(self, batch:tp.Tuple[torch.Tensor, torch.Tensor]):
         x,ytrue = batch
         assert len(ytrue.shape) == 4 and ytrue.shape[1] == len(CLASSES)
@@ -58,6 +62,11 @@ class SegmentationTask(training.TrainingTask):
             torch.sigmoid(ypred['boundary'][:,None]), 
             ytrue[:, CLASSES['boundary']][:,None].float() 
         ).mean()
+        if self.dice_on_center:
+            dice += dice_loss( 
+                torch.sigmoid(ypred['center'][:,None]), 
+                ytrue[:, CLASSES['center']][:,None].float() 
+            ).mean()
         
         logs    = {'bce': float(bce), 'dice':float(dice) }
         logs.update( dict([
