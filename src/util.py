@@ -3,6 +3,9 @@ import typing as tp
 import numpy as np
 import scipy
 import torch
+import cv2
+from shapely.geometry import Polygon, Point
+import json
 
 def select_largest_connected_component(x:np.ndarray) -> np.ndarray:
     '''Remove all connected components from binary array mask except the largest'''
@@ -92,3 +95,74 @@ def labelmap_to_areas_output(labelmap:np.ndarray) -> str:
     for l,c in zip(labels, counts):
         output += f'{l}, {c}\n'
     return output
+
+
+def labelmap_to_contours(inbd_labelmap:np.array, cy:int,cx:int, minimum_pixels:int =50):
+    region_ids = np.unique(inbd_labelmap)
+    # remove background region (id=0)
+    region_ids = region_ids[region_ids > 0]
+    contours_list = []
+
+    mask = np.zeros_like(inbd_labelmap)
+    region_zones = np.zeros((mask.shape[0],mask.shape[1], 3), dtype=np.uint8)
+    for region in region_ids:
+        region_mask = inbd_labelmap == region
+        mask[region_mask] = 255
+        # get contours of region
+
+        contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        if len(contours) == 0:
+            continue
+
+        # Contour must have a thickness == 1
+        contour = contours[0].squeeze()
+        if contour.ndim == 1:
+            continue
+        if contour.shape[0] < minimum_pixels:
+            continue
+
+        # contour = self.make_contour_of_thickness_one(contour, inbd_labelmap)#, output_dir)
+        contour_poly = Polygon(contour[:, [1, 0]].tolist())
+        if not contour_poly.contains(Point(cy, cx)):
+            continue
+
+        contours_list.append(contour)
+
+    return contours_list
+
+
+def polygon_2_labelme_json(polygon_list, image_path):
+    """
+    Converting ch_i list object to labelme format. This format is used to store the coordinates of the rings at the image
+    original resolution
+    @param polygon_list: ch_i list
+    @param image_path: image input path
+    @return:
+    - labelme_json: json in labelme format. Ring coordinates are stored here.
+    """
+
+    labelme_json = {"imagePath":str(image_path), "imageHeight":None,
+                    "imageWidth":None, "version":"5.0.1",
+                    "flags":{},"shapes":[],"imageData": None}
+    for idx, polygon in enumerate(polygon_list):
+        if len(polygon.shape) < 2 :
+            continue
+
+        ring = {"label":str(idx+1)}
+
+        ring["points"] = polygon.tolist()
+        ring["shape_type"] = "polygon"
+        ring["flags"] = {}
+        labelme_json["shapes"].append(ring)
+
+    return labelme_json
+
+def write_json(dict_to_save: dict, filepath: str) -> None:
+    """
+    Write dictionary to disk
+    :param dict_to_save: serializable dictionary to save
+    :param filepath: path where to save
+    :return: void
+    """
+    with open(str(filepath), 'w') as f:
+        json.dump(dict_to_save, f)

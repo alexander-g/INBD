@@ -145,7 +145,9 @@ def inference(args):
         upscale = (not args.seg)
         if args.images.lower().endswith('.csv'):
             #use cx, cy from csv file
-            pith_pixel_position = (cy_list[i], cx_list[i])
+            cy = cy_list[i]
+            cx = cx_list[i]
+            pith_pixel_position = (cy,cx)
 
         try:
 
@@ -164,6 +166,16 @@ def inference(args):
             PIL.Image.fromarray((labelmap_rgba*255).astype('uint8')).save(outf+'.labelmap.png')
 
             open(outf+'.areas.csv', 'w').write(util.labelmap_to_areas_output(labelmap))
+
+            #to LabelMe format
+            from src.util import labelmap_to_contours, write_json, polygon_2_labelme_json
+
+            contours = labelmap_to_contours(labelmap, cy=cy,cx=cx)
+            if len(contours) == 0:
+                continue
+
+            labelme_json = polygon_2_labelme_json(contours, f)
+            write_json(labelme_json, outf+'.labelmap.json')
 
         if hasattr(output, 'boundaries'):
             from src import INBD
