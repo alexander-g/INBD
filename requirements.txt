@@ -16,3 +16,4 @@ coverage==6.5.0
 Shapely==1.7.0
 opencv-contrib-python-headless==4.8.1.78
 opencv-python==4.8.1.78
+pandas==2.1.1
