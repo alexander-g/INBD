@@ -104,7 +104,7 @@ def inference(args):
 
     if args.images.lower().endswith('.txt'):
         imagefiles = util.read_splitfile(args.images)
-    elif args.images.lower().endswith('.jpg') or args.images.lower().endswith('.jpeg'):
+    elif args.images.lower().endswith('.jpg') or args.images.lower().endswith('.jpeg') or args.images.lower().endswith('.png'):
         imagefiles = [args.images]
     else:
         print(f'[ERROR] unknown file type: {args.images}')
@@ -113,6 +113,8 @@ def inference(args):
 
     assert os.path.exists(args.model)
     model      = util.load_model(args.model).eval().requires_grad_(False)
+    model_destination_tmp = model.save(args.model+'.tmp.pt.zip')
+    model                 = util.load_model(model_destination_tmp)
     if torch.cuda.is_available():
         model.cuda()
 
@@ -125,7 +127,11 @@ def inference(args):
         print(f'[{i:4d}/{len(imagefiles)}] {os.path.basename(f)}', end='\r')
         upscale = (not args.seg)
         try:
-            output  = model.process_image(f, upscale_result=upscale)
+            if args.cx is not None and args.cy is not None:
+                pith_pixel_position = (args.cy, args.cx)
+            else:
+                pith_pixel_position = None
+            output  = model.process_image(f, upscale_result=upscale, pith_pixel_position=pith_pixel_position)
         except Exception as e:
             print(f'Could not process image {os.path.basename(f)}: {e}')
             continue
@@ -252,6 +258,8 @@ if __name__ == '__main__':
     parser_inf.add_argument('--output',    type=str, default='inference/', help='Output directory')
     parser_inf.add_argument('--suffix',    type=str, default='',           help='Suffix/description to add to output name')
     parser_inf.add_argument('--seg',       type=bool,default=False,        help='Save only segmentation output')
+    parser_inf.add_argument('--cy',type=int, default=None, help='Center y coordinate for INBD inference (optional)')
+    parser_inf.add_argument('--cx',type=int, default=None, help='Center x coordinate for INBD inference (optional)')
     parser_inf.set_defaults(func=inference)
 
 
