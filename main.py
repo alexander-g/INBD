@@ -1,4 +1,4 @@
-import argparse, sys, os, time, glob
+import argparse, sys, os, time, glob, pandas as pd
 import warnings; warnings.simplefilter('ignore')  #pytorch is too noisy
 
 
@@ -104,7 +104,20 @@ def inference(args):
 
     if args.images.lower().endswith('.txt'):
         imagefiles = util.read_splitfile(args.images)
-    elif args.images.lower().endswith('.jpg') or args.images.lower().endswith('.jpeg'):
+
+    elif args.images.lower().endswith('.csv'):
+        #pith pixel positions are in the second and third column
+        dataset_info = pd.read_csv(args.images)
+        imagefiles = dataset_info.iloc[:,0].tolist()  #first column
+        #append to each image path the dataset root
+        if not os.path.isabs(imagefiles[0]):
+            dataset_root = os.path.dirname(args.images)
+            imagefiles = [os.path.join(dataset_root, f) for f in imagefiles]
+        cx_list = dataset_info.iloc[:,1].tolist()
+        cy_list = dataset_info.iloc[:,2].tolist()
+
+
+    elif args.images.lower().endswith('.jpg') or args.images.lower().endswith('.jpeg') or args.images.lower().endswith('.png'):
         imagefiles = [args.images]
     else:
         print(f'[ERROR] unknown file type: {args.images}')
@@ -113,6 +126,8 @@ def inference(args):
 
     assert os.path.exists(args.model)
     model      = util.load_model(args.model).eval().requires_grad_(False)
+    model_destination_tmp = model.save(args.model+'.tmp.pt.zip')
+    model                 = util.load_model(model_destination_tmp)
     if torch.cuda.is_available():
         model.cuda()
 
@@ -120,12 +135,23 @@ def inference(args):
     outputdir     = os.path.join(args.output, f'{modelbasename}_{args.suffix}' )
     os.makedirs(outputdir, exist_ok=True)
     print(f'Saving outputs to: {outputdir}')
+    if args.cx is not None and args.cy is not None:
+        pith_pixel_position = (args.cy, args.cx)
+    else:
+        pith_pixel_position = None
 
     for i,f in enumerate(imagefiles):
         print(f'[{i:4d}/{len(imagefiles)}] {os.path.basename(f)}', end='\r')
         upscale = (not args.seg)
+        if args.images.lower().endswith('.csv'):
+            #use cx, cy from csv file
+            cy = cy_list[i]
+            cx = cx_list[i]
+            pith_pixel_position = (cy,cx)
+
         try:
-            output  = model.process_image(f, upscale_result=upscale)
+
+            output  = model.process_image(f, upscale_result=upscale, pith_pixel_position=pith_pixel_position)
         except Exception as e:
             print(f'Could not process image {os.path.basename(f)}: {e}')
             continue
@@ -140,6 +166,16 @@ def inference(args):
             PIL.Image.fromarray((labelmap_rgba*255).astype('uint8')).save(outf+'.labelmap.png')
 
             open(outf+'.areas.csv', 'w').write(util.labelmap_to_areas_output(labelmap))
+
+            #to LabelMe format
+            from src.util import labelmap_to_contours, write_json, polygon_2_labelme_json
+
+            contours = labelmap_to_contours(labelmap, cy=cy,cx=cx)
+            if len(contours) == 0:
+                continue
+
+            labelme_json = polygon_2_labelme_json(contours, f)
+            write_json(labelme_json, outf+'.labelmap.json')
 
         if hasattr(output, 'boundaries'):
             from src import INBD
@@ -252,6 +288,8 @@ if __name__ == '__main__':
     parser_inf.add_argument('--output',    type=str, default='inference/', help='Output directory')
     parser_inf.add_argument('--suffix',    type=str, default='',           help='Suffix/description to add to output name')
     parser_inf.add_argument('--seg',       type=bool,default=False,        help='Save only segmentation output')
+    parser_inf.add_argument('--cy',type=int, default=None, help='Center y coordinate for INBD inference (optional)')
+    parser_inf.add_argument('--cx',type=int, default=None, help='Center x coordinate for INBD inference (optional)')
     parser_inf.set_defaults(func=inference)
 
 

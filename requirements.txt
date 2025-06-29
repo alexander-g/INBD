@@ -13,3 +13,7 @@ pytest==7.1.3
 mypy==0.982
 pytest-mypy==0.10.0
 coverage==6.5.0
+Shapely==1.7.0
+opencv-contrib-python-headless==4.8.1.78
+opencv-python==4.8.1.78
+pandas==2.1.1

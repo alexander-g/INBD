@@ -42,8 +42,34 @@ python main.py inference checkpoints/INBD_EH/model.pt.zip dataset/EH/inputimages
 python main.py inference checkpoints/INBD_EH/model.pt.zip dataset/EH/test_inputimages.txt
 ```
 
-***
+### adding pith pixel position as argument
+In Pinus taeda L. species, U-Net model do not segment the pith pixel correctly. In such species, pith can be model
+as a single pixel ([see paper](https://arxiv.org/abs/2404.01952)). 
+```bash
 
+#single imagefile
+python main.py inference checkpoints/UruDendro/model.pt.zip dataset/UruDendro4_1504/T0_B1_N32_A.png --cy 766 --cx 709
+```
+Where `--cy` and `--cx` are the y and x coordinates of the pith pixel in the image. Model checkpoints/UruDendro/model.pt.zip
+was trained on the UruDendro dataset, which is a dataset of Pinus taeda L. tree rings ([see dataset](https://doi.org/10.5281/zenodo.15110646)).
+Image `dataset/UruDendro4_1504/T0_B1_N32_A.png` is an example image from the UruDendro4 dataset ([see dataset](https://doi.org/10.5281/zenodo.15653340)).
+resized to 1504x1504 pixels. Image can be downloaded from [link](https://finguy-my.sharepoint.com/:i:/g/personal/henry_marichal_fing_edu_uy/Efpex2iHvplKt3c1NDdK7CUBYCiF-5VOi8N3XV51rEPQiw?e=rF9trA).
+
+To run in a list of files, the input file should contain the image paths and the pith pixel coordinates.
+
+```bash
+#list of imagefiles
+python main.py inference checkpoints/UruDendro/model.pt.zip dataset/UruDendro4_1504/test_inputimages.csv
+```
+
+Where `test_inputimages.csv` is a CSV file with the following format:
+``` 
+Code, cx, cy
+T0_B1_N32_A.png, 709, 766
+```
+
+
+***
 
 ## Training:
 

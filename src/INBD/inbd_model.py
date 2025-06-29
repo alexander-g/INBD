@@ -102,7 +102,7 @@ class INBD_Model(UNet):
             boundary     = boundary.resample(self.angular_density)
         return boundary
     
-    def process_image(self, x:tp.Union[str, SegmentationOutput], max_n=100, upscale_result=False, ) -> INBD_Output:
+    def process_image(self, x:tp.Union[str, SegmentationOutput], max_n=100, upscale_result=False, pith_pixel_position=None ) -> INBD_Output:
         if isinstance(x, str):
             imagefile  = x
             output     = self.segmentationmodel[0].process_image(imagefile, upscale_result=False)
@@ -110,11 +110,23 @@ class INBD_Model(UNet):
         elif isinstance(x, SegmentationOutput):
             output     = x
             raise NotImplementedError('Need imagefile')
-        
+
+        if pith_pixel_position:
+            shape = output.center.shape
+            cy,cx = pith_pixel_position
+            hscale, wscale = shape[0]/x.shape[0], shape[1]/x.shape[1]
+            cy = int(cy * hscale)
+            cx = int(cx * wscale)
+            yy,xx = skimage.draw.disk((cy,cx), 10, shape=shape)
+            center_pixel_mask = np.zeros_like(output.center, dtype=bool)
+            center_pixel_mask[yy,xx] = True
+
+
         scale      = self.segmentationmodel[0].scale
         x          = torchvision.transforms.ToTensor()( x )
         x          = torch.nn.functional.interpolate(x[None], scale_factor=1/scale)[0]
-        centermask = (output.center > 0)
+
+        centermask = (output.center > 0) if pith_pixel_position is None else center_pixel_mask
 
         all_boundaries = []
         all_pgrids     = []
