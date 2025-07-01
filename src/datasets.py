@@ -45,6 +45,8 @@ class Dataset:
             assert len(tgt_full.shape) == 3
 
             patch_size = int(self.patch_size  * max(self.scales))
+            min_dim = np.minimum(img_full.shape[1], img_full.shape[2])
+            patch_size = min(patch_size, min_dim)
             slack      =          patch_size // 2
             base       = os.path.basename(imagefile)
             for i,patch in enumerate(slice_into_patches_with_overlap(img_full, patch_size, slack)):
@@ -96,6 +98,7 @@ class Dataset:
     def create_dataloader(self, batch_size, shuffle=False, num_workers='auto'):
         if num_workers == 'auto':
             num_workers = os.cpu_count()
+        print(num_workers)
         return torch.utils.data.DataLoader(self, batch_size, shuffle, collate_fn=getattr(self, 'collate_fn', None),
                                            num_workers=num_workers, pin_memory=True,
                                            worker_init_fn=lambda x: np.random.seed(torch.randint(0,1000,(1,))[0].item()+x) )
