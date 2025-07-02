@@ -98,7 +98,6 @@ class Dataset:
     def create_dataloader(self, batch_size, shuffle=False, num_workers='auto'):
         if num_workers == 'auto':
             num_workers = os.cpu_count()
-        print(num_workers)
         return torch.utils.data.DataLoader(self, batch_size, shuffle, collate_fn=getattr(self, 'collate_fn', None),
                                            num_workers=num_workers, pin_memory=True,
                                            worker_init_fn=lambda x: np.random.seed(torch.randint(0,1000,(1,))[0].item()+x) )

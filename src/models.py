@@ -50,7 +50,7 @@ class UNet(torch.nn.Module):
         device = list(self.parameters())[0].device
         x      = x.to(device)
         # Check input size
-        if False and (x.shape[-2] < 5 or x.shape[-1] < 5):
+        if (x.shape[-2] < 5 or x.shape[-1] < 5):
             return torch.zeros((x.shape[0], self.cls.out_channels, x.shape[-2], x.shape[-1]), device=device)
 
         X = self.backbone(x)
