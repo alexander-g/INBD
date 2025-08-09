@@ -49,7 +49,10 @@ class UNet(torch.nn.Module):
     def forward(self, x:torch.Tensor, sigmoid=False, return_features=False) -> torch.Tensor:
         device = list(self.parameters())[0].device
         x      = x.to(device)
-        
+        # Check input size
+        if (x.shape[-2] < 5 or x.shape[-1] < 5):
+            return torch.zeros((x.shape[0], self.cls.out_channels, x.shape[-2], x.shape[-1]), device=device)
+
         X = self.backbone(x)
         X = ([x] + [X[f'out{i}'] for i in range(5)])[::-1]
         x = X.pop(0)

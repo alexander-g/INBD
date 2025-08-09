@@ -45,6 +45,8 @@ class Dataset:
             assert len(tgt_full.shape) == 3
 
             patch_size = int(self.patch_size  * max(self.scales))
+            min_dim = np.minimum(img_full.shape[1], img_full.shape[2])
+            patch_size = min(patch_size, min_dim)
             slack      =          patch_size // 2
             base       = os.path.basename(imagefile)
             for i,patch in enumerate(slice_into_patches_with_overlap(img_full, patch_size, slack)):
