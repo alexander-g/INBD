@@ -167,15 +167,16 @@ def inference(args):
 
             open(outf+'.areas.csv', 'w').write(util.labelmap_to_areas_output(labelmap))
 
-            #to LabelMe format
-            from src.util import labelmap_to_contours, write_json, polygon_2_labelme_json
+            if pith_pixel_position is not None:
+                #to LabelMe format
+                from src.util import labelmap_to_contours, write_json, polygon_2_labelme_json
 
-            contours = labelmap_to_contours(labelmap, cy=cy,cx=cx)
-            if len(contours) == 0:
-                continue
+                contours = labelmap_to_contours(labelmap, cy=cy,cx=cx)
+                if len(contours) == 0:
+                    continue
 
-            labelme_json = polygon_2_labelme_json(contours, f)
-            write_json(labelme_json, outf+'.labelmap.json')
+                labelme_json = polygon_2_labelme_json(contours, f)
+                write_json(labelme_json, outf+'.labelmap.json')
 
         if hasattr(output, 'boundaries'):
             from src import INBD
